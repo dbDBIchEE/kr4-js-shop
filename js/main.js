@@ -1,101 +1,208 @@
-const orderDialog = document.getElementById('order-dialog');
-const orderButtons = document.querySelectorAll('.product-card__button');
-const closeDialogButton = document.getElementById('close-order-dialog');
-const selectedProductInput = document.getElementById('selected-product');
+import { initMenu } from './menu.js';
+import { initModals } from './modal.js';
+import { initForms } from './forms.js';
 
-if (orderButtons.length && orderDialog && selectedProductInput) {
-  orderButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      selectedProductInput.value = button.dataset.product;
-      orderDialog.showModal();
-    });
-  });
-}
 
-if (closeDialogButton && orderDialog) {
-  closeDialogButton.addEventListener('click', () => {
-    orderDialog.close();
-  });
-}
-
-const orderForm = document.getElementById('order-form');
-const successMessage = document.getElementById('success-message');
-
-if (orderForm && successMessage) {
-  orderForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const formElements = Array.from(orderForm.elements);
-    formElements.forEach((el) => {
-      if (el.willValidate) el.removeAttribute('aria-invalid');
-    });
-
-    if (!orderForm.checkValidity()) {
-      formElements.forEach((el) => {
-        if (el.willValidate && !el.checkValidity()) {
-          el.setAttribute('aria-invalid', 'true');
-        }
-      });
-      orderForm.reportValidity();
-      return;
-    }
-
-    successMessage.hidden = false;
-    orderForm.reset();
-    orderDialog.close();
-  });
-}
-
-const orderFormPage = document.getElementById('order-form-page');
-const pageSuccessMessage = document.getElementById('page-success-message');
-
-if (orderFormPage && pageSuccessMessage) {
-  orderFormPage.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const formElements = Array.from(orderFormPage.elements);
-    formElements.forEach((el) => {
-      if (el.willValidate) el.removeAttribute('aria-invalid');
-    });
-
-    if (!orderFormPage.checkValidity()) {
-      formElements.forEach((el) => {
-        if (el.willValidate && !el.checkValidity()) {
-          el.setAttribute('aria-invalid', 'true');
-        }
-      });
-      orderFormPage.reportValidity();
-      return;
-    }
-
-    pageSuccessMessage.hidden = false;
-    orderFormPage.reset();
-  });
-}
 
 const toTopButton = document.getElementById('to-top');
-
 if (toTopButton) {
   toTopButton.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  const menuToggle = document.querySelector('.menu-toggle');
-  const siteNav = document.getElementById('site-nav'); // Теперь он найдет его по id
-
-  if (menuToggle && siteNav) {
-    menuToggle.addEventListener('click', () => {
-      // Переключаем класс
-      const isOpen = siteNav.classList.toggle('is-open');
-      
-      // Меняем атрибут доступности
-      menuToggle.setAttribute('aria-expanded', isOpen);
-      
-      // Меняем подпись
-      menuToggle.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
-    });
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('.product-card__button');
+  if (button) {
+    const productInput = document.getElementById('selected-product');
+    if (productInput) {
+      productInput.value = button.dataset.product;
+    }
   }
 });
+
+// ==========================================
+// ЛОГИКА МНОГОШАГОВОЙ МОДАЛКИ
+// ==========================================
+
+const multiStepForm = document.getElementById('multi-step-form');
+const steps = document.querySelectorAll('.wizard-step');
+const indicators = document.querySelectorAll('.wizard-progress__step');
+const selectedPriceInput = document.getElementById('selected-price');
+
+// Переключение шагов
+function goToStep(stepNumber) {
+  // Скрываем все шаги
+  steps.forEach(step => step.hidden = true);
+  // Показываем нужный
+  document.querySelector(`.wizard-step[data-step="${stepNumber}"]`).hidden = false;
+
+  // Обновляем индикаторы
+  indicators.forEach(ind => {
+    const indNum = parseInt(ind.dataset.stepIndicator);
+    ind.classList.remove('is-active', 'is-completed');
+    if (indNum === stepNumber) {
+      ind.classList.add('is-active');
+    } else if (indNum < stepNumber) {
+      ind.classList.add('is-completed');
+    }
+  });
+}
+
+// Валидация текущего шага
+function validateCurrentStep(currentStep) {
+  const stepElement = document.querySelector(`.wizard-step[data-step="${currentStep}"]`);
+  const fields = stepElement.querySelectorAll('[data-rule]');
+  let isValid = true;
+
+  fields.forEach(field => {
+    const fieldRules = (field.dataset.rule || '').split(' ').filter(Boolean);
+    let fieldValid = true;
+    let errorMessage = '';
+
+    for (const ruleName of fieldRules) {
+      const value = field.value;
+      
+      if (ruleName === 'required' && value.trim().length === 0) {
+        fieldValid = false;
+        errorMessage = 'Заполните поле';
+      }
+      if (ruleName === 'min' && value.trim().length < Number(field.dataset.min || 0)) {
+        fieldValid = false;
+        errorMessage = `Минимум ${field.dataset.min} символов`;
+      }
+      if (ruleName === 'email' && value.trim().length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        fieldValid = false;
+        errorMessage = 'Введите корректный email';
+      }
+      if (ruleName === 'phone' && !/^\+?[\d\s()-]{10,}$/.test(value)) {
+        fieldValid = false;
+        errorMessage = 'Введите корректный телефон';
+      }
+
+      if (!fieldValid) break;
+    }
+
+    field.setAttribute('aria-invalid', String(!fieldValid));
+    const errorSpan = document.querySelector(`[data-error-for="${field.id}"]`);
+    if (errorSpan) errorSpan.textContent = errorMessage;
+
+    if (!fieldValid) isValid = false;
+  });
+
+  return isValid;
+}
+
+// Обработка кликов "Далее" и "Назад"
+if (multiStepForm) {
+  let currentStep = 1;
+
+  // Кнопки Далее
+  multiStepForm.querySelectorAll('[data-next-step]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (validateCurrentStep(currentStep)) {
+        currentStep++;
+        if (currentStep === 3) updateSummary();
+        goToStep(currentStep);
+      }
+    });
+  });
+
+  // Кнопки Назад
+  multiStepForm.querySelectorAll('[data-prev-step]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentStep--;
+      goToStep(currentStep);
+    });
+  });
+
+  // Сбор данных и подсчет цены на 3-м шаге
+  function updateSummary() {
+    const productName = document.getElementById('selected-product').value;
+    const basePrice = Number(document.getElementById('selected-price').value) || 0;
+    
+    // 5% доставка
+    const deliveryPrice = Math.round(basePrice * 0.05);
+    const totalPrice = basePrice + deliveryPrice;
+
+    // Записываем в скрытые инпуты (чтобы отправить на бэкенд, если надо)
+    document.getElementById('selected-delivery-price').value = deliveryPrice;
+    document.getElementById('selected-total-price').value = totalPrice;
+
+    // Выводим в HTML
+    document.getElementById('summary-product').textContent = productName;
+    document.getElementById('summary-phone').textContent = document.getElementById('callback-phone').value;
+    
+    const city = document.getElementById('delivery-city').value;
+    const street = document.getElementById('delivery-street').value;
+    document.getElementById('summary-address').textContent = `${city}, ${street}`;
+    
+    const date = document.getElementById('delivery-date').value || 'Не указана';
+    const time = document.getElementById('delivery-time').value || 'Не указано';
+    document.getElementById('summary-date').textContent = `${date} в ${time}`;
+
+    document.getElementById('summary-base-price').textContent = basePrice;
+    document.getElementById('summary-delivery-price').textContent = deliveryPrice;
+    document.getElementById('summary-total-price').textContent = totalPrice;
+  }
+
+  // Обработка отправки формы
+  multiStepForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Получаем все данные формы
+    const formData = new FormData(multiStepForm);
+    const data = Object.fromEntries(formData.entries());
+    
+    console.log('Отправленные данные:', data);
+    
+    alert('Заказ успешно оформлен!');
+    multiStepForm.reset();
+    goToStep(1);
+    currentStep = 1;
+    
+    // Закрываем модалку
+    const modal = document.getElementById('callback-modal');
+    if (modal) {
+      modal.hidden = true;
+      document.body.classList.remove('no-scroll');
+    }
+  });
+}
+
+// Инициализация цены при клике на кнопку "Заказать"
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('.product-card__button');
+  if (button) {
+    const productInput = document.getElementById('selected-product');
+    const priceInput = document.getElementById('selected-price');
+    
+    // Название товара
+    if (productInput) {
+      productInput.value = button.dataset.product;
+    }
+    
+    // Если у кнопки есть data-price (нужно добавить в HTML каталога!), берем оттуда.
+    // Иначе парсим цену из карточки.
+    if (priceInput) {
+      let price = 0;
+      if (button.dataset.price) {
+        price = Number(button.dataset.price);
+      } else {
+        // Пытаемся найти цену в блоке карточки
+        const card = button.closest('.product-card');
+        const priceEl = card ? card.querySelector('.product-card__price') : null;
+        if (priceEl) {
+          // Извлекаем все цифры из текста (например, из "Цена: 1558 руб." -> 1558)
+          const match = priceEl.textContent.match(/\d+/);
+          if (match) price = Number(match[0]);
+        }
+      }
+      priceInput.value = price;
+    }
+  }
+});
+
+initMenu();
+initModals();
+initForms();

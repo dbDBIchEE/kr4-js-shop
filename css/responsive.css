@@ -26,8 +26,9 @@ img, video {
 @media (min-width: 768px) {
   .site-nav__list {
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
+    width: 100%;
   }
   .site-nav__link {
     width: auto;
@@ -86,7 +87,7 @@ img, video {
 @media (min-width: 768px) {
   .order-form--page {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
   }
   .order-form__field:nth-child(odd) {

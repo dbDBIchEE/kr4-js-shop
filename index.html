@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="css/animejs.css">
   <script src="https://cdn.jsdelivr.net/npm/animejs@4.3.6/dist/bundles/anime.umd.min.js"></script>
   <script src="js/anime.js" defer></script>
-  
   <script src="js/main.js" defer></script>
 </head>
 <body>
@@ -34,9 +33,7 @@
           >
             <rect x="5"  y="2"  width="12" height="36" rx="3" />
             <rect x="20" y="8"  width="12" height="24" rx="3" />
-
             <rect x="32" y="16" width="36" height="8" rx="2" />
-          
             <rect x="68" y="8"  width="12" height="24" rx="3" />
             <rect x="83" y="2"  width="12" height="36" rx="3" />
           </svg>
@@ -45,14 +42,16 @@
           <button class="rotate-btn">0</button>
         </div>
       </div>
-      
-      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav">
+
+      <!-- Кнопка меню -->
+      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav" data-menu-toggle>
         <span class="menu-toggle__bar"></span>
         <span class="menu-toggle__bar"></span>
         <span class="menu-toggle__bar"></span>
       </button>
 
-      <nav class="site-nav" id="site-nav" aria-label="Основная навигация">
+      <!-- Навигация -->
+      <nav class="site-nav" id="site-nav" aria-label="Основная навигация" data-menu>
         <ul class="site-nav__list">
           <li class="site-nav__item">
             <a class="site-nav__link site-nav__link--active glass" href="index.html" aria-current="page">Главная</a>
@@ -65,15 +64,6 @@
           </li>
           <li class="site-nav__item">
             <a class="site-nav__link glass" href="order.html">Заявка</a>
-          </li>
-          <li class="site-nav__item">
-            <a class="site-nav__link glass" href="index.html#advantages">Преимущества</a>
-          </li>
-          <li class="site-nav__item">
-            <a class="site-nav__link glass" href="index.html#popular">Популярные товары</a>
-          </li>
-          <li class="site-nav__item">
-            <a class="site-nav__link glass" href="index.html#contacts">Обратная связь</a>
           </li>
         </ul>
       </nav>

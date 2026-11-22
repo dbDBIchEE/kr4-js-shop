@@ -37,6 +37,7 @@
 .square {
     width: fit-content;
     height: fit-content;
+    padding: 10px;
     border-radius: 10px;
     border: 2.5px dashed #af4c00;
     background: #e08c4a;

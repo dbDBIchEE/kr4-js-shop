@@ -169,11 +169,20 @@ a:focus-visible {
 }
   
 /* ======================= 6. Блок site-nav ======================= */
+
+.site-nav {
+  display: none;
+}
+
+.site-nav.is-open {
+  display: flex;
+  flex-direction: column;
+}
   
 .site-nav__list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: var(--space-sm);
   padding: 0;
@@ -205,6 +214,19 @@ a:focus-visible {
   color: var(--color-primary);
   background-color: var(--color-success-bg) !important;
   font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .menu-toggle {
+    display: none;
+  }
+
+  .site-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    width: 50%;
+  }
 }
   
 /* ======================= 7. Блок breadcrumbs ======================= */
@@ -478,19 +500,19 @@ s {
 }
   
 .order-form__actions {
-  display: flex;
   gap: var(--space-md);
-  margin-top: var(--space-lg);
 }
 
 .order-form__actions .button {
-  flex: 1;
+  width: 48%;
 }
 
 /* Чекбокс "Согласие" */
 .order-form__field--checkbox .order-form__label {
   display: flex;
+  gap: 10px;
   align-items: center;
+  justify-content: center;
   font-weight: normal;
   cursor: pointer;
 }
@@ -582,6 +604,8 @@ s {
   accent-color: var(--color-primary);
 }
 
+
+
 /* ======================= 19. Позиционирование: бейджи в карточках ======================= */
 
 .product-card__badge {
@@ -659,6 +683,18 @@ s {
   border-radius: var(--radius-lg);
   background-color: var(--color-surface);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.form-error {
+  display: block;
+  min-height: 1.2em;
+  color: #b00020;
+  font-size: 0.875rem;
+}
+
+[aria-invalid="true"] {
+  border-color: #b00020;
+  outline-color: #b00020;
 }
   
 /* ======================= 23. Sticky-навигация ======================= */
@@ -882,11 +918,323 @@ s {
   outline: 3px solid var(--color-focus);
 }
 
-/* ======================= 28. Glass effect ======================= */
+/* ======================= 28. modal ======================= */
 
-.glass {
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(8px);
-  box-shadow: none;
+/* Скрытие окна, когда нет атрибута open или стоит hidden */
+.modal[hidden] {
+  display: none;
+}
+
+/* Фон (затемнение) */
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(30, 41, 59, 0.7); /* Используем оттенок из --color-text */
+  backdrop-filter: blur(4px); /* Легкое размытие фона */
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  padding: var(--space-md); /* Отступы по краям для мобилок */
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+/* Само окно */
+.modal__dialog {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 480px;
+  width: 100%;
+  padding: var(--space-xl);
+  position: relative;
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+/* Заголовок */
+.modal__dialog h2 {
+  margin-top: 0;
+  margin-bottom: var(--space-lg);
+  color: var(--color-primary-dark);
+  font-size: 24px;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: var(--space-sm);
+}
+
+/* Кнопка закрытия (крестик) */
+.modal__dialog [data-modal-close] {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.modal__dialog [data-modal-close]:hover {
+  background-color: var(--color-bg);
+  color: var(--color-danger);
+}
+
+.modal__dialog [data-modal-close]:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Стилизация полей внутри модалки (чтобы не дублировать классы) */
+.modal__dialog label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.modal__dialog input,
+.modal__dialog textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: var(--space-xs);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modal__dialog input:focus-visible,
+.modal__dialog textarea:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+
+.modal__dialog button[type="submit"] {
+  width: 100%;
+  margin-top: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal__dialog button[type="submit"]:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.modal__dialog button[type="submit"]:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* ======================= 29. Многошаговая модалка (Wizard) ======================= */
+
+.wizard-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: var(--space-xl);
+  padding: 0 var(--space-md);
+}
+
+.wizard-progress__line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-border);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.wizard-progress__step {
+  position: relative;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-bg);
+  border: 2px solid var(--color-border);
+  color: var(--color-muted);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.wizard-progress__step.is-active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 0 0 4px var(--color-success-bg);
+}
+
+.wizard-progress__step.is-completed {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: var(--color-white);
+}
+
+.wizard-step {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.wizard-step[hidden] {
+  display: none;
+}
+
+.wizard-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.wizard-actions .button {
+  flex: 1;
+}
+
+.required-mark {
+  color: var(--color-danger);
+}
+
+.optional-mark {
+  font-size: 0.85em;
+  color: var(--color-muted);
+  font-weight: normal;
+}
+
+.delivery-row {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.delivery-row .order-form__field {
+  flex: 1;
+}
+
+/* Блок подтверждения */
+.order-summary {
+  background-color: var(--color-bg);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.order-summary h3 {
+  margin-top: 0;
+  color: var(--color-primary-dark);
+}
+
+.order-summary p {
+  margin: var(--space-sm) 0;
+}
+
+.order-summary__prices {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px dashed var(--color-border);
+}
+
+.order-summary__total {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-secondary-dark);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ======================= 30. Inputs with Prefix ======================= */
+
+.input-prefix-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-prefix-wrapper:focus-within {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+
+.input-prefix-wrapper.has-error {
+  border-color: var(--color-danger);
+  background-color: #fdf2f2;
+}
+
+.input-prefix-symbol {
+  padding: 10px 0 10px 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  user-select: none;
+  pointer-events: none;
+}
+
+.input-prefix-part {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 10px 12px !important;
+  width: 100%;
+}
+
+.input-prefix-part:focus-visible {
+  outline: none !important;
+}
+
+#order-email {
+  field-sizing: content;
+  width: auto;
+  flex: 0 0 auto;
+  min-width: 70px;
+  max-width: 300px;
+  padding-right: 4px !important;
+}
+#order-email-domain {
+  padding-left: 4px !important;
 }

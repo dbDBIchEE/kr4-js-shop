@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/animejs.css">
   <script src="https://cdn.jsdelivr.net/npm/animejs@4.3.6/dist/bundles/anime.umd.min.js"></script>
   <script src="js/anime.js" defer></script>
-  <script src="js/main.js" defer></script>
+  <script type="module" src="js/main.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к основному содержимому</a>
@@ -148,16 +148,15 @@
             <p class="product-card__description">
               Чистый креатин моногидрат для повышения силы и выносливости. Помогает увеличить мышечную массу и ускорить восстановление после интенсивных тренировок.
             </p>
-            <p class="product-card__price">Цена: 1558 руб.</p>
+            <p class="product-card__price">1558 руб.</p>
             <div class="product-card__actions">
               <a class="button button--secondary" href="product1.html">Подробнее</a>
-              <button class="button button--primary product-card__button" type="button" data-product="Креатин">
+              <button data-modal-open="callback-modal" data-price="1558" class="button button--primary product-card__button" type="button" data-product="Креатин">
                 Заказать
               </button>
             </div>
           </article>
 
-          <!-- Товар 2: Протеин (Хит) -->
           <article class="product-card">
             <img 
               src="images/protein.png" 
@@ -174,10 +173,10 @@
             <p class="product-card__description">
               Высококачественный сывороточный протеин для роста и восстановления мышц. Обеспечивает организм необходимым белком и легко усваивается после тренировки.
             </p>
-            <p class="product-card__price">Цена: 2346 руб.</p>
+            <p class="product-card__price">2346 руб.</p>
             <div class="product-card__actions">
               <a class="button button--secondary" href="product2.html">Подробнее</a>
-              <button class="button button--primary product-card__button" type="button" data-product="Протеин">
+              <button data-modal-open="callback-modal" data-price="2346" class="button button--primary product-card__button" type="button" data-product="Протеин">
                 Заказать
               </button>
             </div>
@@ -203,7 +202,7 @@
             <p class="product-card__price"><s>1100 руб.</s> 1000 руб.</p>
             <div class="product-card__actions">
               <a class="button button--secondary" href="product3.html">Подробнее</a>
-              <button class="button button--primary product-card__button" type="button" data-product="Предтрен">
+              <button data-modal-open="callback-modal" data-price="1000" class="button button--primary product-card__button" type="button" data-product="Предтрен">
                 Заказать
               </button>
             </div>
@@ -225,10 +224,10 @@
             <p class="product-card__description">
               Аминокислоты BCAA 2:1:1 со вкусом "Зеленое яблоко". Ускоряют восстановление мышц и предотвращают катаболизм.
             </p>
-            <p class="product-card__price">Цена: 692 руб.</p>
+            <p class="product-card__price">692 руб.</p>
             <div class="product-card__actions">
               <a class="button button--secondary" href="product4.html">Подробнее</a>
-              <button class="button button--primary product-card__button" type="button" data-product="BCAA">
+              <button data-modal-open="callback-modal" data-price="692" class="button button--primary product-card__button" type="button" data-product="BCAA">
                 Заказать
               </button>
             </div>
@@ -246,5 +245,105 @@
   </footer>
 
   <button class="to-top" type="button" id="to-top" aria-label="Наверх">↑</button>
+
+  
+  <div class="modal" id="callback-modal" data-modal hidden>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="callback-title">
+      
+      <button type="button" data-modal-close aria-label="Закрыть окно">×</button>
+  
+      <h2 id="callback-title">Оформление заказа</h2>
+      
+      <!-- Индикатор прогресса -->
+      <div class="wizard-progress" aria-hidden="true">
+        <div class="wizard-progress__line"></div>
+        <div class="wizard-progress__step is-active" data-step-indicator="1">1</div>
+        <div class="wizard-progress__step" data-step-indicator="2">2</div>
+        <div class="wizard-progress__step" data-step-indicator="3">3</div>
+      </div>
+  
+      <!-- Скрытые данные о товаре -->
+      <input type="hidden" id="selected-product" name="product">
+      <input type="hidden" id="selected-price" name="price">
+      <input type="hidden" id="selected-delivery-price" name="delivery-price">
+      <input type="hidden" id="selected-total-price" name="total-price">
+  
+      <form id="multi-step-form" novalidate>
+        
+        <!-- ШАГ 1: Контакты -->
+        <div class="wizard-step is-active" data-step="1">
+          <label for="callback-name">Имя <span class="required-mark">*</span></label>
+          <input id="callback-name" name="name" data-rule="required min" data-min="2">
+          <span class="form-error" data-error-for="callback-name"></span>
+  
+          <label for="callback-phone">Телефон <span class="required-mark">*</span></label>
+          <input id="callback-phone" name="phone" type="tel" data-rule="required phone">
+          <span class="form-error" data-error-for="callback-phone"></span>
+  
+          <label for="callback-email">Email <span class="optional-mark">(необязательно)</span></label>
+          <input id="callback-email" name="email" type="email" data-rule="email">
+          <span class="form-error" data-error-for="callback-email"></span>
+  
+          <div class="wizard-actions">
+            <button type="button" class="button button--primary" data-next-step>Далее</button>
+          </div>
+        </div>
+  
+        <!-- ШАГ 2: Доставка -->
+        <div class="wizard-step" data-step="2" hidden>
+          <div class="order-form__field">
+            <label for="delivery-city">Город <span class="required-mark">*</span></label>
+            <input id="delivery-city" name="city" data-rule="required min" data-min="2">
+            <span class="form-error" data-error-for="delivery-city"></span>
+          </div>
+  
+          <div class="order-form__field">
+            <label for="delivery-street">Улица, дом, кв/офис <span class="required-mark">*</span></label>
+            <input id="delivery-street" name="street" data-rule="required min" data-min="5">
+            <span class="form-error" data-error-for="delivery-street"></span>
+          </div>
+          
+          <div class="delivery-row">
+            <div class="order-form__field">
+              <label for="delivery-date">Дата <span class="optional-mark">(необязательно)</span></label>
+              <input id="delivery-date" name="date" type="date">
+            </div>
+            <div class="order-form__field">
+              <label for="delivery-time">Время <span class="optional-mark">(необязательно)</span></label>
+              <input id="delivery-time" name="time" type="time">
+            </div>
+          </div>
+  
+          <div class="wizard-actions">
+            <button type="button" class="button button--secondary" data-prev-step>Назад</button>
+            <button type="button" class="button button--primary" data-next-step>Далее</button>
+          </div>
+        </div>
+  
+        <!-- ШАГ 3: Подтверждение -->
+        <div class="wizard-step" data-step="3" hidden>
+          <div class="order-summary">
+            <h3>Детали заказа</h3>
+            <p><strong>Товар:</strong> <span id="summary-product"></span></p>
+            <p><strong>Телефон:</strong> <span id="summary-phone"></span></p>
+            <p><strong>Адрес:</strong> <span id="summary-address"></span></p>
+            <p><strong>Дата и время:</strong> <span id="summary-date"></span></p>
+            
+            <div class="order-summary__prices">
+              <p>Стоимость товара: <span id="summary-base-price"></span> руб.</p>
+              <p>Доставка (5%): <span id="summary-delivery-price"></span> руб.</p>
+              <p class="order-summary__total">Итого: <span id="summary-total-price"></span> руб.</p>
+            </div>
+          </div>
+  
+          <div class="wizard-actions">
+            <button type="button" class="button button--secondary" data-prev-step>Назад</button>
+            <button type="submit" class="button button--primary">Подтвердить заказ</button>
+          </div>
+        </div>
+  
+      </form>
+    </div>
+  </div>
 </body>
 </html>
