@@ -1,6 +1,7 @@
 import { initMenu } from './menu.js';
 import { initModals } from './modal.js';
 import { initForms } from './forms.js';
+import { products } from './data.js';
 
 
 
@@ -30,14 +31,10 @@ const steps = document.querySelectorAll('.wizard-step');
 const indicators = document.querySelectorAll('.wizard-progress__step');
 const selectedPriceInput = document.getElementById('selected-price');
 
-// Переключение шагов
 function goToStep(stepNumber) {
-  // Скрываем все шаги
   steps.forEach(step => step.hidden = true);
-  // Показываем нужный
   document.querySelector(`.wizard-step[data-step="${stepNumber}"]`).hidden = false;
 
-  // Обновляем индикаторы
   indicators.forEach(ind => {
     const indNum = parseInt(ind.dataset.stepIndicator);
     ind.classList.remove('is-active', 'is-completed');
@@ -49,7 +46,6 @@ function goToStep(stepNumber) {
   });
 }
 
-// Валидация текущего шага
 function validateCurrentStep(currentStep) {
   const stepElement = document.querySelector(`.wizard-step[data-step="${currentStep}"]`);
   const fields = stepElement.querySelectorAll('[data-rule]');
@@ -93,7 +89,6 @@ function validateCurrentStep(currentStep) {
   return isValid;
 }
 
-// Обработка кликов "Далее" и "Назад"
 if (multiStepForm) {
   let currentStep = 1;
 
@@ -146,11 +141,9 @@ if (multiStepForm) {
     document.getElementById('summary-total-price').textContent = totalPrice;
   }
 
-  // Обработка отправки формы
   multiStepForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
-    // Получаем все данные формы
     const formData = new FormData(multiStepForm);
     const data = Object.fromEntries(formData.entries());
     
@@ -170,30 +163,24 @@ if (multiStepForm) {
   });
 }
 
-// Инициализация цены при клике на кнопку "Заказать"
 document.addEventListener('click', (event) => {
   const button = event.target.closest('.product-card__button');
   if (button) {
     const productInput = document.getElementById('selected-product');
     const priceInput = document.getElementById('selected-price');
     
-    // Название товара
     if (productInput) {
       productInput.value = button.dataset.product;
     }
     
-    // Если у кнопки есть data-price (нужно добавить в HTML каталога!), берем оттуда.
-    // Иначе парсим цену из карточки.
     if (priceInput) {
       let price = 0;
       if (button.dataset.price) {
         price = Number(button.dataset.price);
       } else {
-        // Пытаемся найти цену в блоке карточки
         const card = button.closest('.product-card');
         const priceEl = card ? card.querySelector('.product-card__price') : null;
         if (priceEl) {
-          // Извлекаем все цифры из текста (например, из "Цена: 1558 руб." -> 1558)
           const match = priceEl.textContent.match(/\d+/);
           if (match) price = Number(match[0]);
         }
@@ -202,6 +189,58 @@ document.addEventListener('click', (event) => {
     }
   }
 });
+
+export function searchProducts(query) {
+  const normalizedQuery = query.trim().toLowerCase();
+  if (normalizedQuery === '') return products;
+  
+  return products.filter((product) => 
+    product.title.toLowerCase().includes(normalizedQuery)
+  );
+}
+
+export function filterByCategory(category) {
+  if (category === 'all') return products;
+  return products.filter((product) => product.category === category);
+}
+
+export function filterAvailable() {
+  return products.filter((product) => product.isAvailable);
+}
+
+export function sortByPrice(direction = 'asc') {
+  const copy = [...products];
+  if (direction === 'desc') {
+    return copy.sort((a, b) => b.price - a.price);
+  }
+  return copy.sort((a, b) => a.price - b.price);
+}
+
+export function countProducts(items = products) {
+  return items.length;
+}
+
+export function calculateAveragePrice(items = products) {
+  if (items.length === 0) return 0;
+  const total = items.reduce((sum, product) => sum + product.price, 0);
+  return Math.round(total / items.length);
+}
+
+export function calculateTotalPrice(items) {
+  return items.reduce((sum, product) => sum + product.price, 0);
+}
+
+
+
+const statCount = document.getElementById('stat-count');
+const statAverage = document.getElementById('stat-average');
+const statTotal = document.getElementById('stat-total');
+
+if (statCount && statAverage && statTotal) {
+  statCount.textContent = countProducts();
+  statAverage.textContent = calculateAveragePrice();
+  statTotal.textContent = calculateTotalPrice(products);
+}
 
 initMenu();
 initModals();

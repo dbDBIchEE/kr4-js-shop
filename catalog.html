@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/animejs.css">
   <script src="https://cdn.jsdelivr.net/npm/animejs@4.3.6/dist/bundles/anime.umd.min.js"></script>
-  <script src="js/anime.js" defer></script>
-  <script type="module" src="js/main.js" defer></script>
+  <script type="module" src="js/anime.js"></script>
+  <script type="module" src="js/main.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к основному содержимому</a>
@@ -63,15 +63,6 @@
           </li>
           <li class="site-nav__item">
             <a class="site-nav__link glass" href="order.html">Заявка</a>
-          </li>
-          <li class="site-nav__item">
-            <a class="site-nav__link glass" href="index.html#advantages">Преимущества</a>
-          </li>
-          <li class="site-nav__item">
-            <a class="site-nav__link glass" href="index.html#popular">Популярные товары</a>
-          </li>
-          <li class="site-nav__item">
-            <a class="site-nav__link glass" href="index.html#contacts">Обратная связь</a>
           </li>
         </ul>
       </nav>
@@ -130,6 +121,12 @@
 
       <section class="catalog-products">
         <h2>Список товаров</h2>
+
+        <div class="catalog-stats" id="catalog-stats" style="margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <p><strong>Всего товаров:</strong> <span id="stat-count"></span></p>
+          <p><strong>Средняя цена:</strong> <span id="stat-average"></span> руб.</p>
+          <p><strong>Общая стоимость:</strong> <span id="stat-total"></span> руб.</p>
+        </div>
 
         <div class="products-grid">
           <article class="product-card">

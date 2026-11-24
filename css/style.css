@@ -180,17 +180,20 @@ a:focus-visible {
 }
   
 .site-nav__list {
+  width: 100%;
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-sm);
+  
   padding: 0;
   margin: 0;
   list-style: none;
 }
   
 .site-nav__link {
+  flex: 0 0 auto;
   display: inline-block;
   padding: var(--space-sm) var(--space-md);
   color: var(--color-text);
@@ -222,9 +225,7 @@ a:focus-visible {
   }
 
   .site-nav {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
+    display: block;
     width: 50%;
   }
 }

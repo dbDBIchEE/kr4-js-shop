@@ -13,26 +13,10 @@ img, video {
 }
 
 /* Мобильная навигация */
-.site-nav__list {
-  flex-direction: column;
-  align-items: flex-start;
-}
 
 .site-nav__link {
   display: block;
   width: 100%;
-}
-
-@media (min-width: 768px) {
-  .site-nav__list {
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-  .site-nav__link {
-    width: auto;
-  }
 }
 
 /* Мобильный hero */
