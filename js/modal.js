@@ -1,9 +1,8 @@
 let lastFocusedElement = null;
 
 function getFocusable(modal) {
-  return modal.querySelectorAll(
-    'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-  );
+  return [...modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+    .filter(el => el.offsetParent !== null);
 }
 
 function openModal(modal) {
@@ -13,6 +12,18 @@ function openModal(modal) {
 
   const firstFocusable = getFocusable(modal)[0];
   firstFocusable?.focus();
+
+  const form = modal.querySelector('form');
+  if (form) form.reset();
+
+  const steps = modal.querySelectorAll('.wizard-step');
+  if (steps.length > 0) {
+    steps.forEach((s, i) => s.hidden = i !== 0);
+    modal.querySelectorAll('.wizard-progress__step').forEach((s, i) => {
+      s.classList.toggle('is-active', i === 0);
+      s.classList.remove('is-completed');
+    });
+  }
 }
 
 function closeModal(modal) {

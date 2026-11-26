@@ -8,7 +8,7 @@ img, video {
 }
 
 .container, .section, .site-header__inner {
-  width: min(100% - 32px, 1100px);
+  width: min(calc(100% - 32px), 1100px);
   margin-inline: auto;
 }
 
@@ -43,24 +43,20 @@ img, video {
 
 /* Мобильная сетка карточек */
 .products-grid {
+  display: grid;
   grid-template-columns: 1fr;
+  gap: 24px;
 }
 
-.catalog-layout {
-  grid-template-columns: 1fr;
-  grid-template-areas: 
-    "filters"
-    "products";
+@media (min-width: 640px) {
+  .products-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
-
-@media (min-width: 640px) { .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 @media (min-width: 1024px) {
-  .products-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  
-  .catalog-layout {
-    grid-template-columns: 260px 1fr;
-    grid-template-areas: "filters products";
+  .products-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -131,7 +127,8 @@ img, video {
 
   
   .site-nav {
-    display: none; 
+    display: block;
+    flex: 1;
     position: absolute;
     top: 100%;
     left: 0;

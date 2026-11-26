@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,42 +16,36 @@
   <script type="module" src="js/anime.js"></script>
   <script type="module" src="js/main.js"></script>
 </head>
+
 <body>
   <a class="skip-link" href="#main">Перейти к основному содержимому</a>
   <header class="site-header">
     <div class="site-header__inner">
       <div class="logo-box">
         <div>
-          <svg 
-            class="logo logo-animated"
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 100 40" 
-            width="200" 
-            height="80"
-            fill="currentColor"
-            aria-label="Гантель"
-          >
-            <rect x="5"  y="2"  width="12" height="36" rx="3" />
-            <rect x="20" y="8"  width="12" height="24" rx="3" />
+          <svg class="logo logo-animated" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" width="200"
+            height="80" fill="currentColor" aria-label="Гантель">
+            <rect x="5" y="2" width="12" height="36" rx="3" />
+            <rect x="20" y="8" width="12" height="24" rx="3" />
 
             <rect x="32" y="16" width="36" height="8" rx="2" />
-          
-            <rect x="68" y="8"  width="12" height="24" rx="3" />
-            <rect x="83" y="2"  width="12" height="36" rx="3" />
+
+            <rect x="68" y="8" width="12" height="24" rx="3" />
+            <rect x="83" y="2" width="12" height="36" rx="3" />
           </svg>
         </div>
         <div>
-          <button class="rotate-btn">0</button>
+          <button class="rotate-btn" type="button" aria-label="Вращать логотип">0</button>
         </div>
       </div>
 
-      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav">
+      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav" data-menu-toggle>
         <span class="menu-toggle__bar"></span>
         <span class="menu-toggle__bar"></span>
         <span class="menu-toggle__bar"></span>
       </button>
 
-      <nav class="site-nav" id="site-nav" aria-label="Основная навигация">
+      <nav class="site-nav" id="site-nav" aria-label="Основная навигация" data-menu>
         <ul class="site-nav__list">
           <li class="site-nav__item">
             <a class="site-nav__link glass" href="index.html">Главная</a>
@@ -67,11 +62,21 @@
         </ul>
       </nav>
 
+      <button class="cart-toggle" id="cart-toggle" aria-label="Открыть корзину">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
+
       <div class="square"><span>Drag Me!</span></div>
     </div>
   </header>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
     <nav class="breadcrumbs" aria-label="Хлебные крошки">
       <a class="breadcrumbs__link" href="index.html">Главная</a>
       <span class="breadcrumbs__current">Каталог</span>
@@ -80,158 +85,54 @@
     <section class="section">
       <h1>Каталог товаров</h1>
       <p>
-        На этой странице представлен учебный каталог товаров. 
+        На этой странице представлен учебный каталог товаров.
         Выберите интересующий вас товар, чтобы узнать подробности или оформить заявку.
       </p>
     </section>
 
-    <section class="catalog-layout">
-      <aside class="catalog-filters">
-        <h2>Фильтры</h2>
-
-        <form class="filters-form" action="#" method="get">
-          <fieldset>
-            <legend>Категория</legend>
-            <label>
-              <input type="checkbox" name="category" value="all">
-              Все товары
-            </label>
-            <label>
-              <input type="checkbox" name="category" value="popular">
-              Популярные
-            </label>
-            <label>
-              <input type="checkbox" name="category" value="new">
-              Новинки
-            </label>
-          </fieldset>
-
-          <fieldset>
-            <legend>Цена</legend>
-            <label for="price-from">От</label>
-            <input id="price-from" name="price-from" type="number" min="0" placeholder="0">
-
-            <label for="price-to">До</label>
-            <input id="price-to" name="price-to" type="number" min="0" placeholder="5000">
-          </fieldset>
-
-          <button class="button button--primary" type="submit">Применить</button>
-        </form>
-      </aside>
+    <div class="catalog-layout">
 
       <section class="catalog-products">
         <h2>Список товаров</h2>
 
-        <div class="catalog-stats" id="catalog-stats" style="margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0;">
-          <p><strong>Всего товаров:</strong> <span id="stat-count"></span></p>
-          <p><strong>Средняя цена:</strong> <span id="stat-average"></span> руб.</p>
-          <p><strong>Общая стоимость:</strong> <span id="stat-total"></span> руб.</p>
+        <!-- Панель управления -->
+        <div class="catalog-controls">
+          <div class="catalog-controls__field">
+            <label for="catalog-search">Поиск:</label>
+            <input type="search" id="catalog-search" placeholder="Введите название..." data-search>
+          </div>
+
+          <div class="catalog-controls__field">
+            <label for="catalog-category">Категория:</label>
+            <select id="catalog-category" data-filter-category>
+              <option value="all">Все товары</option>
+              <option value="drinks">Напитки</option>
+              <option value="health">Здоровье</option>
+              <option value="protein">Протеин</option>
+              <option value="sports">Спортпит</option>
+              <option value="accessories">Аксессуары</option>
+            </select>
+          </div>
+
+          <div class="catalog-controls__field">
+            <label for="catalog-sort">Сортировка:</label>
+            <select id="catalog-sort" data-sort>
+              <option value="default">По умолчанию</option>
+              <option value="price-asc">По цене (дешевле)</option>
+              <option value="price-desc">По цене (дороже)</option>
+            </select>
+          </div>
         </div>
 
-        <div class="products-grid">
-          <article class="product-card">
-            <img 
-              src="images/creatine.png" 
-              srcset="images/creatine.png 480w, 
-                      images/creatine.png 640w, 
-                      images/creatine.png 960w" 
-              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" 
-              alt="Креатин моногидрат" 
-              width="640" 
-              height="480" 
-              loading="lazy"
-            >
-            <h3 class="product-card__title">Креатин</h3>
-            <p class="product-card__description">
-              Чистый креатин моногидрат для повышения силы и выносливости. Помогает увеличить мышечную массу и ускорить восстановление после интенсивных тренировок.
-            </p>
-            <p class="product-card__price">1558 руб.</p>
-            <div class="product-card__actions">
-              <a class="button button--secondary" href="product1.html">Подробнее</a>
-              <button data-modal-open="callback-modal" data-price="1558" class="button button--primary product-card__button" type="button" data-product="Креатин">
-                Заказать
-              </button>
-            </div>
-          </article>
+        <!-- Сообщение о количестве -->
+        <p class="catalog-message" id="catalog-message" aria-live="polite"></p>
 
-          <article class="product-card">
-            <img 
-              src="images/protein.png" 
-              srcset="images/protein.png 480w, 
-                      images/protein.png 640w, 
-                      images/protein.png 960w" 
-              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" 
-              alt="Сывороточный протеин" 
-              width="640" 
-              height="480" 
-              loading="lazy"
-            >
-            <h3 class="product-card__title">Протеин</h3>
-            <p class="product-card__description">
-              Высококачественный сывороточный протеин для роста и восстановления мышц. Обеспечивает организм необходимым белком и легко усваивается после тренировки.
-            </p>
-            <p class="product-card__price">2346 руб.</p>
-            <div class="product-card__actions">
-              <a class="button button--secondary" href="product2.html">Подробнее</a>
-              <button data-modal-open="callback-modal" data-price="2346" class="button button--primary product-card__button" type="button" data-product="Протеин">
-                Заказать
-              </button>
-            </div>
-          </article>
-
-          <article class="product-card product-card--discount">
-            <img 
-              src="images/preworkout.png" 
-              srcset="images/preworkout.png 480w, 
-                      images/preworkout.png 640w, 
-                      images/preworkout.png 960w" 
-              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" 
-              alt="Предтренировочный комплекс" 
-              width="640" 
-              height="480" 
-              loading="lazy"
-            >
-            <span class="product-card__badge">Скидка</span>
-            <h3 class="product-card__title">Предтрен</h3>
-            <p class="product-card__description">
-              Мощный энергетический комплекс для максимальной отдачи на тренировке. Повышает концентрацию, дает прилив сил и отодвигает момент усталости.
-            </p>
-            <p class="product-card__price"><s>1100 руб.</s> 1000 руб.</p>
-            <div class="product-card__actions">
-              <a class="button button--secondary" href="product3.html">Подробнее</a>
-              <button data-modal-open="callback-modal" data-price="1000" class="button button--primary product-card__button" type="button" data-product="Предтрен">
-                Заказать
-              </button>
-            </div>
-          </article>
-
-          <article class="product-card">
-            <img 
-              src="images/BCAA.png" 
-              srcset="images/BCAA.png 480w, 
-                      images/BCAA.png 640w, 
-                      images/BCAA.png 960w" 
-              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" 
-              alt="Аминокислоты BCAA" 
-              width="640" 
-              height="480" 
-              loading="lazy"
-            >
-            <h3 class="product-card__title">BCAA</h3>
-            <p class="product-card__description">
-              Аминокислоты BCAA 2:1:1 со вкусом "Зеленое яблоко". Ускоряют восстановление мышц и предотвращают катаболизм.
-            </p>
-            <p class="product-card__price">692 руб.</p>
-            <div class="product-card__actions">
-              <a class="button button--secondary" href="product4.html">Подробнее</a>
-              <button data-modal-open="callback-modal" data-price="692" class="button button--primary product-card__button" type="button" data-product="BCAA">
-                Заказать
-              </button>
-            </div>
-          </article>
+        <!-- Контейнер для карточек -->
+        <div class="products-grid" data-products-container>
+          <!-- Карточки будут генерироваться здесь через JS -->
         </div>
       </section>
-    </section>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -243,14 +144,14 @@
 
   <button class="to-top" type="button" id="to-top" aria-label="Наверх">↑</button>
 
-  
+
   <div class="modal" id="callback-modal" data-modal hidden>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="callback-title">
-      
+
       <button type="button" data-modal-close aria-label="Закрыть окно">×</button>
-  
+
       <h2 id="callback-title">Оформление заказа</h2>
-      
+
       <!-- Индикатор прогресса -->
       <div class="wizard-progress" aria-hidden="true">
         <div class="wizard-progress__line"></div>
@@ -258,34 +159,37 @@
         <div class="wizard-progress__step" data-step-indicator="2">2</div>
         <div class="wizard-progress__step" data-step-indicator="3">3</div>
       </div>
-  
+
       <!-- Скрытые данные о товаре -->
-      <input type="hidden" id="selected-product" name="product">
-      <input type="hidden" id="selected-price" name="price">
-      <input type="hidden" id="selected-delivery-price" name="delivery-price">
-      <input type="hidden" id="selected-total-price" name="total-price">
-  
-      <form id="multi-step-form" novalidate>
-        
+      
+
+      <form id="multi-step-form" data-validate-form novalidate>
+
+        <input type="hidden" id="selected-product" name="product">
+        <input type="hidden" id="selected-price" name="price">
+        <input type="hidden" id="selected-delivery-price" name="delivery-price">
+        <input type="hidden" id="selected-total-price" name="total-price">
+
         <!-- ШАГ 1: Контакты -->
         <div class="wizard-step is-active" data-step="1">
           <label for="callback-name">Имя <span class="required-mark">*</span></label>
           <input id="callback-name" name="name" data-rule="required min" data-min="2">
           <span class="form-error" data-error-for="callback-name"></span>
-  
+
           <label for="callback-phone">Телефон <span class="required-mark">*</span></label>
+          <span class="input-prefix-symbol" style="margin-right: 1.5%;">+7</span>
           <input id="callback-phone" name="phone" type="tel" data-rule="required phone">
           <span class="form-error" data-error-for="callback-phone"></span>
-  
-          <label for="callback-email">Email <span class="optional-mark">(необязательно)</span></label>
+
+          <label for="callback-email">Email</label>
           <input id="callback-email" name="email" type="email" data-rule="email">
           <span class="form-error" data-error-for="callback-email"></span>
-  
+
           <div class="wizard-actions">
             <button type="button" class="button button--primary" data-next-step>Далее</button>
           </div>
         </div>
-  
+
         <!-- ШАГ 2: Доставка -->
         <div class="wizard-step" data-step="2" hidden>
           <div class="order-form__field">
@@ -293,13 +197,13 @@
             <input id="delivery-city" name="city" data-rule="required min" data-min="2">
             <span class="form-error" data-error-for="delivery-city"></span>
           </div>
-  
+
           <div class="order-form__field">
             <label for="delivery-street">Улица, дом, кв/офис <span class="required-mark">*</span></label>
             <input id="delivery-street" name="street" data-rule="required min" data-min="5">
             <span class="form-error" data-error-for="delivery-street"></span>
           </div>
-          
+
           <div class="delivery-row">
             <div class="order-form__field">
               <label for="delivery-date">Дата <span class="optional-mark">(необязательно)</span></label>
@@ -310,13 +214,13 @@
               <input id="delivery-time" name="time" type="time">
             </div>
           </div>
-  
+
           <div class="wizard-actions">
             <button type="button" class="button button--secondary" data-prev-step>Назад</button>
             <button type="button" class="button button--primary" data-next-step>Далее</button>
           </div>
         </div>
-  
+
         <!-- ШАГ 3: Подтверждение -->
         <div class="wizard-step" data-step="3" hidden>
           <div class="order-summary">
@@ -325,22 +229,58 @@
             <p><strong>Телефон:</strong> <span id="summary-phone"></span></p>
             <p><strong>Адрес:</strong> <span id="summary-address"></span></p>
             <p><strong>Дата и время:</strong> <span id="summary-date"></span></p>
-            
+
             <div class="order-summary__prices">
               <p>Стоимость товара: <span id="summary-base-price"></span> руб.</p>
               <p>Доставка (5%): <span id="summary-delivery-price"></span> руб.</p>
               <p class="order-summary__total">Итого: <span id="summary-total-price"></span> руб.</p>
             </div>
           </div>
-  
+
           <div class="wizard-actions">
             <button type="button" class="button button--secondary" data-prev-step>Назад</button>
             <button type="submit" class="button button--primary">Подтвердить заказ</button>
           </div>
         </div>
-  
+
       </form>
+
+      <p id="order-success-message" class="success-message" role="status" hidden>Заказ успешно оформлен!</p>
+
     </div>
   </div>
+
+  <div class="cart-drawer" id="cart-drawer" hidden>
+    <div class="cart-drawer__overlay" id="cart-overlay"></div>
+    <aside class="cart-drawer__panel" role="dialog" aria-modal="true" aria-label="Корзина">
+      <div class="cart-drawer__header">
+        <h2>Корзина</h2>
+        <button class="cart-drawer__close" id="cart-close" aria-label="Закрыть корзину">×</button>
+      </div>
+
+      <div class="cart-drawer__content" id="cart-items">
+        <!-- Сюда будут рендериться товары -->
+      </div>
+
+      <div class="cart-drawer__footer" id="cart-summary" hidden>
+
+        <div style="margin-bottom: 16px; display: flex; gap: 8px;">
+          <input type="text" id="promo-input" placeholder="Промокод (SPORT10)" style="flex:1; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+          <button type="button" class="button button--secondary" id="apply-promo-btn">Применить</button>
+        </div>
+        <p id="promo-message" style="color: var(--color-danger); font-size: 12px; margin-bottom: 8px;" hidden></p>
+
+        <div class="cart-drawer__total">
+          <span>Итого:</span>
+          <span id="cart-total">0</span> руб.
+        </div>
+
+        <button class="button button--primary" id="checkout-btn" data-modal-open="callback-modal">Оформить заказ</button>
+      </div>
+
+      <p class="cart-drawer__empty" id="cart-empty-message">Корзина пуста</p>
+    </aside>
+  </div>
 </body>
+
 </html>

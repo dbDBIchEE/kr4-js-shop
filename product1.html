@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/animejs.css">
   <script src="https://cdn.jsdelivr.net/npm/animejs@4.3.6/dist/bundles/anime.umd.min.js"></script>
-  <script src="js/anime.js" defer></script>
-  <script type="module" src="js/main.js" defer></script>
+  <script type="module" src="js/anime.js"></script>
+  <script type="module" src="js/main.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к основному содержимому</a>
@@ -40,17 +40,17 @@
           </svg>
         </div>
         <div>
-          <button class="rotate-btn">0</button>
+          <button class="rotate-btn" type="button" aria-label="Вращать логотип">0</button>
         </div>
       </div>
 
-      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav">
+      <button class="menu-toggle" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav" data-menu-toggle>
         <span class="menu-toggle__bar"></span>
         <span class="menu-toggle__bar"></span>
         <span class="menu-toggle__bar"></span>
       </button>
 
-      <nav class="site-nav" id="site-nav" aria-label="Основная навигация">
+      <nav class="site-nav" id="site-nav" aria-label="Основная навигация" data-menu>
         <ul class="site-nav__list">
           <li class="site-nav__item">
             <a class="site-nav__link glass" href="index.html">Главная</a>
@@ -66,6 +66,16 @@
           </li>
         </ul>
       </nav>
+
+      <button class="cart-toggle" id="cart-toggle" aria-label="Открыть корзину">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
 
       <div class="square"><span>Drag Me!</span></div>
     </div>
